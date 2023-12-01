@@ -89,6 +89,13 @@ module Ladb::OpenCutList
                 ''
               end
 
+              # 定义一个函数，名为 remove_mm，参数为 str
+              def remove_mm(str)
+                # 返回 str 的前面部分，从第一个字符开始，到倒数第四个字符结束
+                return str.slice(0, -4)
+              end
+
+
               case @source.to_i
 
                 when EXPORT_OPTION_SOURCE_SUMMARY
@@ -133,14 +140,17 @@ module Ladb::OpenCutList
                   #添加材质名称
                   header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.material_name'))
                   unless @hide_bbox_dimensions
+                    #添加最终厚度
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_thickness'))
-
+                    #添加最终宽度
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_width'))
+                    #添加最终长度
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_length'))
 
                   end
-
+                  #添加数量
                   header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.count'))
+                  #添加描述
                   header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.name'))
                   unless @hide_cutting_dimensions
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.cutting_length'))
@@ -175,7 +185,15 @@ module Ladb::OpenCutList
                       no_dimensions = group.material_type == MaterialAttributes::TYPE_UNKNOW && @hide_untyped_material_dimensions
 
                       row = []
+                      #写入编号
                       row.push(part.number)
+                      #写入材质名称
+                      row.push(group.material_display_name)
+                      unless @hide_bbox_dimensions
+                        row.push(no_dimensions ? '' : remove_mm(_sanitize_value_string(part.length)))
+                        row.push(no_dimensions ? '' : remove_mm(_sanitize_value_string(part.width)))
+                        row.push(no_dimensions ? '' : remove_mm(_sanitize_value_string(part.thickness)))
+                      end
                       row.push(part.name)
                       row.push(part.count)
                       unless @hide_cutting_dimensions
@@ -183,15 +201,9 @@ module Ladb::OpenCutList
                         row.push(no_cutting_dimensions ? '' : _sanitize_value_string(part.cutting_width))
                         row.push(no_cutting_dimensions ? '' : _sanitize_value_string(part.cutting_thickness))
                       end
-                      unless @hide_bbox_dimensions
-                        row.push(no_dimensions ? '' : _sanitize_value_string(part.length))
-                        row.push(no_dimensions ? '' : _sanitize_value_string(part.width))
-                        row.push(no_dimensions ? '' : _sanitize_value_string(part.thickness))
-                      end
                       unless @hide_final_areas
                         row.push(no_dimensions ? '' : _sanitize_value_string(part.final_area))
                       end
-                      row.push(group.material_display_name)
                       unless @hide_entity_names
                         row.push(part.is_a?(Part) ? part.entity_names.map(&:first).join(',') : '')
                       end
