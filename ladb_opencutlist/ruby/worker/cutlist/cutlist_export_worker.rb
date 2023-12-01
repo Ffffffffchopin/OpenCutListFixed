@@ -128,23 +128,29 @@ module Ladb::OpenCutList
 
                   # Header row
                   header = []
+                  #添加编号
                   header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.number'))
-                  header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.name'))
+                  #添加材质名称
+                  header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.material_name'))
+                  unless @hide_bbox_dimensions
+                    header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_thickness'))
+
+                    header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_width'))
+                    header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_length'))
+
+                  end
+
                   header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.count'))
+                  header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.name'))
                   unless @hide_cutting_dimensions
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.cutting_length'))
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.cutting_width'))
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.cutting_thickness'))
                   end
-                  unless @hide_bbox_dimensions
-                    header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_length'))
-                    header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_width'))
-                    header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.bbox_thickness'))
-                  end
+
                   unless @hide_final_areas
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.final_area'))
                   end
-                  header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.material_name'))
                   unless @hide_entity_names
                     header.push(Plugin.instance.get_i18n_string('tab.cutlist.export.entity_names'))
                   end
